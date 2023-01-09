@@ -10,7 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,8 +36,8 @@ public class PriceServiceImpl implements PriceService{
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Autowired
-	private FeignClientInterface feignClient;
+	/*@Autowired
+	private FeignClientInterface feignClient;*/
 	
 	private static final Logger LOGGER= LoggerFactory.getLogger(PriceServiceImpl.class);
 	public String ServiceLog() {
@@ -67,6 +67,7 @@ public class PriceServiceImpl implements PriceService{
 		priceBoImpl.deletePrice(id);
 		
 	}
+	
 	public List<Item> getAllItems() {
 		      HttpHeaders headers = new HttpHeaders();
 		      headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -96,9 +97,9 @@ public class PriceServiceImpl implements PriceService{
 	      return restTemplate.exchange("http://localhost:8080/deleteItem/"+id, HttpMethod.DELETE, entity, String.class).getBody();
 		
 	}
-	public List<Item> getAllItemsFeign() {	
+	/*public List<Item> getAllItemsFeign() {	
 		return feignClient.getAllItems();
-	}
+	}*/
 
 	
 	

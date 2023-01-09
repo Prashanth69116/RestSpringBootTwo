@@ -1,10 +1,14 @@
 package com.RestFul.capgemini.demo.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,14 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.RestFul.capgemini.demo.Entity.Item;
-import com.RestFul.capgemini.demo.Entity.Price;
 import com.RestFul.capgemini.demo.MapStruct.MapStructMapper;
 import com.RestFul.capgemini.demo.Service.PriceServiceImpl;
 import com.RestFul.capgemini.demo.dto.PriceDto;
 import com.RestFul.capgemini.demo.feign.FeignClientInterface;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 
+@EnableFeignClients
 @RestController
 @RequestMapping("/price")
 public class PriceController {
@@ -32,10 +37,12 @@ public class PriceController {
 	@Autowired 
 	MapStructMapper mapStruct;
 	
-	@Autowired
-	FeignClientInterface feignClient;
+	/*@Autowired
+	FeignClientInterface feignClient;*/
 	
 	private static final Logger LOGGER= LoggerFactory.getLogger(PriceController.class);
+
+	private static final String ITEMSBYTEMPLATE = "getAllMethods";
 
     @RequestMapping("/getAllPrice")
     public List<PriceDto> getAllPrices(){
@@ -68,10 +75,24 @@ public class PriceController {
     	return "Status : up ";
     }
 
-    @RequestMapping("/getAllItems")
+    /*@RequestMapping("/getAllItems")
+    @CircuitBreaker(name=ITEMSBYTEMPLATE, fallbackMethod="getAllMethod")
     public List<Item> getAllItems(){
     	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
         return service.getAllItems();
+    }*/
+    //Rest Template
+    @RequestMapping("/getAllItems")
+    @CircuitBreaker(name=ITEMSBYTEMPLATE, fallbackMethod="getAllMethod")
+    public ResponseEntity<List<Item>> getAllItems()
+    {
+    List<Item> allItems = service.getAllItems();
+    LOGGER.info("fetched data in controller by REST TEMPLATE");
+    return new ResponseEntity<List<Item>>(allItems , HttpStatus.OK);
+
+    }
+    public ResponseEntity<String> getAllMethod(Exception e){
+   	 return new ResponseEntity<String>("customer_service_is_down" , HttpStatus.OK);
     }
     
     @GetMapping("/getItem/{id}")
@@ -96,7 +117,7 @@ public class PriceController {
   @RequestMapping("/getAllItemsFeign")
     public List<Item> getAllItemsFeign(){
     	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
-        return service.getAllItemsFeign();
+        return service.getAllItems();
     }
     
 }
