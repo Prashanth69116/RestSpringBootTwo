@@ -44,6 +44,8 @@ public class PriceController {
 
 	private static final String ITEMSBYTEMPLATE = "getAllMethods";
 
+	private static final String ITEMSBYFEIGN = "getAllByFeign";
+
     @RequestMapping("/getAllPrice")
     public List<PriceDto> getAllPrices(){
     	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
@@ -75,12 +77,7 @@ public class PriceController {
     	return "Status : up ";
     }
 
-    /*@RequestMapping("/getAllItems")
-    @CircuitBreaker(name=ITEMSBYTEMPLATE, fallbackMethod="getAllMethod")
-    public List<Item> getAllItems(){
-    	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
-        return service.getAllItems();
-    }*/
+    
     //Rest Template
     @RequestMapping("/getAllItems")
     @CircuitBreaker(name=ITEMSBYTEMPLATE, fallbackMethod="getAllMethod")
@@ -92,32 +89,59 @@ public class PriceController {
 
     }
     public ResponseEntity<String> getAllMethod(Exception e){
-   	 return new ResponseEntity<String>("customer_service_is_down" , HttpStatus.OK);
+   	 return new ResponseEntity<String>("Item_service_is_down" , HttpStatus.OK);
     }
     
-    @GetMapping("/getItem/{id}")
-    public Item getItem(@PathVariable int id){
-    	LOGGER.info("inside class !!! PriceController, method!!!: getItem");
-        return service.getItem(id);
-    }
-
-    @PostMapping("/items")
-    public String addItem( @RequestBody Item id) {
-    	LOGGER.info("inside class !!! PriceController, method!!!: addItem");
-    	return service.addItem(id)+"New Details added successfully";
-    }
     
-    @DeleteMapping("/deleteItem/{id}")
-    public String deleteItem(@PathVariable int id){
-    	LOGGER.info("inside class !!! PriceController, method!!!: deleteItem");
-    	return service.deleteItem(id);
-        
-    }
-    
+  //Feign Client
   @RequestMapping("/getAllItemsFeign")
-    public List<Item> getAllItemsFeign(){
-    	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
-        return service.getAllItems();
-    }
+  @CircuitBreaker(name=ITEMSBYFEIGN, fallbackMethod="getAllByFeign")
+  public ResponseEntity<List<Item>> getAllItemsFeign()
+  {
+  List<Item> allItems = service.getAllItems();
+  LOGGER.info("fetched data in controller by REST TEMPLATE");
+  return new ResponseEntity<List<Item>>(allItems , HttpStatus.OK);
+
+  }
+  public ResponseEntity<String> getAllByFeign(Exception e){
+ 	 return new ResponseEntity<String>("Item_service_is_down" , HttpStatus.OK);
+  }
+
+  
+  @GetMapping("/getItem/{id}")
+  public Item getItem(@PathVariable int id){
+  	LOGGER.info("inside class !!! PriceController, method!!!: getItem");
+      return service.getItem(id);
+  }
+
+  @PostMapping("/items")
+  public String addItem( @RequestBody Item id) {
+  	LOGGER.info("inside class !!! PriceController, method!!!: addItem");
+  	return service.addItem(id)+"New Details added successfully";
+  }
+  
+  @DeleteMapping("/deleteItem/{id}")
+  public String deleteItem(@PathVariable int id){
+  	LOGGER.info("inside class !!! PriceController, method!!!: deleteItem");
+  	return service.deleteItem(id);
+    
+  	
+  	
+  	
+  }
+  //REST TEMPLATE
+  /*@RequestMapping("/getAllItems")
+  @CircuitBreaker(name=ITEMSBYTEMPLATE, fallbackMethod="getAllMethod")
+  public List<Item> getAllItems(){
+  	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
+      return service.getAllItems();
+  }*/
+  
+  //FEIGN CLIENT
+  /*@RequestMapping("/getAllItemsFeign")
+  public List<Item> getAllItemsFeign(){
+  	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
+      return service.getAllItems();
+  }*/
     
 }

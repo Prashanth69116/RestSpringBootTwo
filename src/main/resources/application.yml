@@ -13,6 +13,7 @@ resilience4j:
     sliding-window-type: COUNT_BASED
 
 
+
 management:
  health:
   circuitbreakers:

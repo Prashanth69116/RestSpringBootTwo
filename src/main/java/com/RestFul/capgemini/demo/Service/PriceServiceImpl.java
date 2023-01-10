@@ -73,28 +73,28 @@ public class PriceServiceImpl implements PriceService{
 		      headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		      HttpEntity <String> entity = new HttpEntity<String>(headers);
 		      
-		      return restTemplate.exchange("http://localhost:8080/getAllItems", HttpMethod.GET, entity, List.class).getBody();
+		      return restTemplate.exchange("http://localhost:8080/items/getAllItems", HttpMethod.GET, entity, List.class).getBody();
 	}
 	public Item getItem(int id) {
 		 HttpHeaders headers = new HttpHeaders();
 	      headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	      HttpEntity <String> entity = new HttpEntity<String>(headers);
 	      
-	      return restTemplate.exchange("http://localhost:8080/getItem/"+id, HttpMethod.GET, entity, Item.class).getBody();
+	      return restTemplate.exchange("http://localhost:8080/items/getItem/"+id, HttpMethod.GET, entity, Item.class).getBody();
 	}
 	public String addItem(Item id) {
 		 HttpHeaders headers = new HttpHeaders();
 	      headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	      HttpEntity <String> entity = new HttpEntity<String>(headers);
 	      
-	      return restTemplate.exchange("http://localhost:8080/items", HttpMethod.POST, entity, String.class).getBody();
+	      return restTemplate.exchange("http://localhost:8080/items/items", HttpMethod.POST, entity, String.class).getBody();
 	}
 	public String deleteItem(int id) {
 		 HttpHeaders headers = new HttpHeaders();
 	      headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	      HttpEntity <String> entity = new HttpEntity<String>(headers);
 	      
-	      return restTemplate.exchange("http://localhost:8080/deleteItem/"+id, HttpMethod.DELETE, entity, String.class).getBody();
+	      return restTemplate.exchange("http://localhost:8080/items/deleteItem/"+id, HttpMethod.DELETE, entity, String.class).getBody();
 		
 	}
 	/*public List<Item> getAllItemsFeign() {	
