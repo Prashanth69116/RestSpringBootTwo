@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,34 +47,38 @@ public class PriceController {
 
 	private static final String ITEMSBYFEIGN = "getAllByFeign";
 
+	@Value("${spring.application.name}")
+	
+	private String application_name;
+	
     @RequestMapping("/getAllPrice")
     public List<PriceDto> getAllPrices(){
-    	LOGGER.info("inside class !!! PriceController, method!!!: getAllItems");
+    	LOGGER.info("applicationName= "+application_name+" fetched the price data in controller by getAllPrices Method");
         return service.getAllPrices();
     }
 
     @GetMapping("/getPrice/{id}")
     
     public PriceDto getPrice(@PathVariable int id){
-    	LOGGER.info("inside class !!! PriceController, method!!!: getItem");
+    	LOGGER.info("applicationName= "+application_name+" fetched the price data by ID in controller by getPrice Method");
         return service.getPrice(id);
     }
 
     @PostMapping("/addPrice")
     public String addPrice( @RequestBody PriceDto body) {
-    	LOGGER.info("inside class !!! PriceController, method!!!: addItem");
+    	LOGGER.info("applicationName= "+application_name+" Adding data to price in controller by addPrice Method");
     	return service.addPrice(body)+"New Details added successfully";
     }
     
     @DeleteMapping("/deletePrice/{id}")
     public void deletePrice(@PathVariable int id){
-    	LOGGER.info("inside class !!! PriceController, method!!!: deleteItem");
+    	LOGGER.info("applicationName= "+application_name+" Deleting data from price in controller by deletePrice Method");
     		service.deletePrice(id);
         
     }
     @GetMapping("/Health")
     public String HealthCheck() {
-    	LOGGER.info("Health check");
+    	LOGGER.info("applicationName= "+application_name+" checking the Health check in controller by Health method");
     	return "Status : up ";
     }
 
@@ -84,7 +89,7 @@ public class PriceController {
     public ResponseEntity<List<Item>> getAllItems()
     {
     List<Item> allItems = service.getAllItems();
-    LOGGER.info("fetched data in controller by REST TEMPLATE");
+    LOGGER.info("applicationName= "+application_name+" fetched data in controller by REST TEMPLATE");
     return new ResponseEntity<List<Item>>(allItems , HttpStatus.OK);
 
     }
@@ -99,7 +104,7 @@ public class PriceController {
   public ResponseEntity<List<Item>> getAllItemsFeign()
   {
   List<Item> allItems = service.getAllItems();
-  LOGGER.info("fetched data in controller by REST TEMPLATE");
+  LOGGER.info("applicationName= "+application_name+" fetched data in controller by FeignClient");
   return new ResponseEntity<List<Item>>(allItems , HttpStatus.OK);
 
   }
